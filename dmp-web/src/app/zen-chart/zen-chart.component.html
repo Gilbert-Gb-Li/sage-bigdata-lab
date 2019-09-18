@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="1100px"
+     viewBox="0 0 1279 1100"
+     style="border: 1px solid #ccc; background-color: #dedede">
+
+  <!--preserveAspectRatio="xMidYMin slice"-->
+  <defs>
+    <marker id="arrow"
+            markerWidth="25" markerHeight="20"
+            refX="8" refY="3"
+            orient="auto"
+            markerUnits="strokeWidth"
+            viewBox="0 0 20 20">
+      <path
+        d="M0,0 L0,6 L9,3 z"
+        fill="#999"
+      />
+    </marker>
+  </defs>
+
+  <g class="zen-stage" *ngFor="let stage of zenContext.stages"
+     [attr.transform]="'translate('+ stage.x + ','+ stage.y + ')'">
+    <rect [attr.width]="ZenConfig.stageWidth"
+          [attr.height]="ZenConfig.stageHeight"></rect>
+    <text [attr.x]="ZenConfig.stageWidth/2" [attr.y]="ZenConfig.stageHeight/2" fill="white">{{stage.name}}</text>
+  </g>
+
+  <path [attr.id]="'path-' + line.getD()"
+        *ngFor="let line of zenContext.lines"
+        [attr.d]="line.getD()"
+        [attr.class]="zenContext.getClass(line.distNode.id, 'zen-line')"
+        marker-end="url(#arrow)"
+  ></path>
+
+  <g *ngFor="let line of zenContext.lines">
+    <g *ngIf="line.distNode.id === zenContext.current">
+      <text>
+        <textPath [attr.id]="'text-' + line.getD()"
+                  [attr.xlink:href]="'#path-' + line.getD()">> > > >
+        </textPath>
+      </text>
+
+      <animate [attr.xlink:href]="'#text-' + line.getD()"
+               attributeName="startOffset"
+               from="0%" to="100%"
+               begin="0s"
+               dur="5s"
+               repeatCount="indefinite"
+               keyTimes="0;1"
+               calcMode="spline"
+               keySplines="0.1 0.2 .22 1"/>
+    </g>
+
+  </g>
+
+
+  <g *ngFor="let node of zenContext.nodes"
+     [attr.transform]="'translate('+ node.x + ','+ node.y + ')'"
+     (click)="zenContext.setCurrent(node.id)">
+    <title>{{node.title}} {{node.stage}}</title>
+    <rect class="node-out" x="0" y="0"
+          [attr.width]="ZenConfig.nodeWidth"
+          [attr.height]="ZenConfig.nodeHeight"
+    ></rect>
+    <image [attr.width]="ZenConfig.nodeWidth" [attr.height]="ZenConfig.nodeHeight" xlink:href="/assets/sql.png"/>
+    <text class="node-text" x="0" y="15" fill="white">
+      {{node.id}}:{{node.title}}
+    </text>
+  </g>
+
+</svg>

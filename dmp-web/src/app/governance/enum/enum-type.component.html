@@ -1,0 +1,34 @@
+<app-data-tab [index]="5"></app-data-tab>
+
+
+<nz-list [nzDataSource]="listData"
+         [nzRenderItem]="item" [nzItemLayout]="'horizontal'"
+         [nzPagination]="pagination"
+         [nzLoading]="loading">
+
+  <ng-template #item let-item>
+    <nz-list-item
+      [nzActions]="item.loading ? [] : [editAction, moreAction]"
+    >
+      <ng-template #editAction><a (click)="edit(item)">edit</a></ng-template>
+      <ng-template #moreAction><a (click)="edit(item)">more</a></ng-template>
+      <nz-list-item-meta
+        [nzTitle]="nzTitle"
+        nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+        [nzDescription]="nzDescription"
+      >
+        <ng-template #nzTitle>
+          <a [routerLink]="'/data/enum/'+item.id">{{ item.tipsName }}（{{ item.saveName }}）</a>
+        </ng-template>
+        <ng-template #nzDescription>
+          {{item.description}}<br/>
+          <!--create: {{item.createTime}} modify: {{item.modifyTime}}-->
+        </ng-template>
+      </nz-list-item-meta>
+    </nz-list-item>
+  </ng-template>
+</nz-list>
+
+<ng-template #pagination>
+  <nz-pagination [nzPageIndex]="1" [nzTotal]="50" (nzPageIndexChange)="loadData($event)"></nz-pagination>
+</ng-template>

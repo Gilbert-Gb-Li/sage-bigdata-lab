@@ -1,0 +1,46 @@
+<app-data-tab [index]="1"></app-data-tab>
+
+
+<ng-template #appExtraTemplate>
+  <a (click)="edit()">
+    <i nz-icon nzType="plus-circle" nzTheme="twotone"></i>
+  </a>
+</ng-template>
+<nz-card [nzBordered]="false" nzTitle="列表" [nzExtra]="appExtraTemplate">
+
+  <nz-list [nzDataSource]="listData"
+           [nzRenderItem]="item" [nzItemLayout]="'horizontal'"
+           [nzPagination]="pagination"
+           [nzLoading]="loading">
+
+    <ng-template #item let-item>
+      <nz-list-item
+        [nzActions]="item.loading ? [] : [editAction, deleteAction]"
+      >
+        <ng-template #editAction><a (click)="edit(item.id)">编辑</a></ng-template>
+        <ng-template #deleteAction><a (click)="delete(item.id)">删除</a></ng-template>
+        <nz-list-item-meta
+          [nzTitle]="nzTitle"
+          nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+          [nzDescription]="item.description"
+        >
+          <ng-template #nzTitle>
+            <a href="/">{{ item.tipsName }}({{item.saveName}})</a>
+          </ng-template>
+        </nz-list-item-meta>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+
+  <ng-template #pagination>
+    <nz-pagination [nzPageIndex]="1" [nzTotal]="50" (nzPageIndexChange)="loadData($event)"></nz-pagination>
+  </ng-template>
+</nz-card>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="APP OPERATE" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()"
+          (nzOnOk)="handleOk()"
+          [nzWidth]="800">
+  <app-biz-app-edit [id]="entityId" [isVisible]="isVisible" (isVisibleChange)="closeView($event)"></app-biz-app-edit>
+  <ng-template #modalFooter>
+  </ng-template>
+</nz-modal>

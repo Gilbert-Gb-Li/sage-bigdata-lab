@@ -1,0 +1,43 @@
+<form nz-form (ngSubmit)="submitForm()">
+  <nz-form-item hidden>
+    <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <input nz-input [(ngModel)]="entity.id" [ngModelOptions]="{standalone: true}"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="6" nzFor="tipsName">APP名称</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <input nz-input [(ngModel)]="entity.tipsName" [ngModelOptions]="{standalone: true}"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="6" nzFor="saveName">APP英文名</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <input nz-input [(ngModel)]="entity.saveName" [ngModelOptions]="{standalone: true}"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSpan]="6" nzFor="description">APP描述</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+    <textarea
+      nz-input
+      [(ngModel)]="entity.description"
+      [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+      [ngModelOptions]="{standalone: true}"
+    ></textarea>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control [nzXs]="{ span: 24, offset: 0 }" [nzSm]="{ span: 20, offset: 18 }">
+      <button nz-button nzType="primary">提交</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-result [(hidden)]="isVisible2" nzStatus="info" nzTitle="Your operation has been executed">
+</nz-result>

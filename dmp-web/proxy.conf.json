@@ -1,0 +1,10 @@
+{
+  "/api": {
+    "target": "http://172.16.30.9:9000",
+    "logLevel": "debug",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": "/api/1.0"
+    }
+  }
+}

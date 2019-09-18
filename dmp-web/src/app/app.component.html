@@ -1,0 +1,16 @@
+<nz-layout>
+  <nz-header>
+    <div class="logo"></div>
+    <ul nz-menu nzTheme="dark" nzMode="horizontal">
+      <li nz-menu-item><a routerLink="governance/index">数据治理</a></li>
+      <li nz-menu-item><a routerLink="process/index">数据处理</a></li>
+      <li nz-menu-item><a routerLink="user">系统管理</a></li>
+    </ul>
+  </nz-header>
+  <nz-content>
+    <div class="inner-content">
+      <router-outlet></router-outlet>
+    </div>
+  </nz-content>
+  <nz-footer>Haima lab ©2019</nz-footer>
+</nz-layout>

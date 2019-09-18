@@ -1,0 +1,11 @@
+<form nz-form>
+  <nz-form-item *ngIf="entity.id">
+    <nz-form-label [nzSpan]="6" nzFor="email">ID:</nz-form-label>
+    <nz-form-control [nzSpan]="14">
+      <input nz-input  readonly [(ngModel)]="entity.id" [ngModelOptions]="{standalone: true}" />
+    </nz-form-control>
+  </nz-form-item >
+
+
+  <button type="button" (click)="editStorage()">提交</button>
+</form>

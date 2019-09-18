@@ -1,0 +1,79 @@
+<app-data-tab [index]="3"></app-data-tab>
+
+<div nz-row>
+  <div nz-col [nzSpan]="6">
+    <nz-card [nzBordered]="false" nzTitle="应用类型">
+      <ng-template #extraTemplate>
+        <a (click)="toAddDataType()">
+          <i nz-icon nzType="plus-circle" nzTheme="twotone"></i>
+        </a>
+      </ng-template>
+
+      <nz-tree
+        [nzData]="treeData"
+        (nzClick)="selectNode($event)"
+        [nzTreeTemplate]="nzTreeTemplate"
+        [nzShowIcon]="true"
+        [nzExpandedIcon]="mutiExpandedIconTpl"
+      >
+        <ng-template #mutiExpandedIconTpl let-node>
+          <i nz-icon
+             nzType="file"
+             class="ant-tree-switcher-line-icon"
+          ></i>
+        </ng-template>
+        <ng-template #nzTreeTemplate let-node>
+          <span class="custom-node" [class.active]="activedNode?.origin.id === node.origin.id">
+            <span class="file-name">{{ node.origin.tipsName }}</span>
+          </span>
+        </ng-template>
+        <nz-dropdown-menu #dataTypeMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="selectDropdown()">添加Schema</li>
+            <li nz-menu-item (click)="selectDropdown()">修改</li>
+          </ul>
+        </nz-dropdown-menu>
+        <nz-dropdown-menu #dataSetMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="selectDropdown()">Action 1</li>
+            <li nz-menu-item (click)="selectDropdown()">Action 2</li>
+          </ul>
+        </nz-dropdown-menu>
+      </nz-tree>
+    </nz-card>
+  </div>
+
+  <div nz-col [nzSpan]="18" style="padding-left: 10px;">
+    <nz-card [nzBordered]="false" nzTitle="列表" [nzExtra]="extraTemplate">
+
+      <nz-list [nzDataSource]="listData"
+               [nzRenderItem]="item" [nzItemLayout]="'horizontal'"
+               [nzPagination]="pagination"
+               [nzLoading]="loading">
+
+        <ng-template #item let-item>
+          <nz-list-item
+            [nzActions]="item.loading ? [] : [editAction, moreAction]"
+          >
+            <ng-template #editAction><a (click)="edit(item)">edit</a></ng-template>
+            <ng-template #moreAction><a (click)="edit(item)">more</a></ng-template>
+            <nz-list-item-meta
+              [nzTitle]="nzTitle"
+              nzAvatar="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+              nzDescription="item.description"
+            >
+              <ng-template #nzTitle>
+                <a>{{ item.tipsName }}（{{item.saveName}}）</a>
+              </ng-template>
+            </nz-list-item-meta>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+
+      <ng-template #pagination>
+        <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="pageSize"
+                       (nzPageIndexChange)="loadData($event)"></nz-pagination>
+      </ng-template>
+    </nz-card>
+  </div>
+</div>

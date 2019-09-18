@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Work Flow Demo</title>
+  <style type="text/css">
+    .clear-fix:after {content:'\200B';display:block;height:0;clear:both;}
+    .toolbar {font-size:24px;background-color:#F5F5F5;border:1px solid #CCC;}
+    .toolbar .item {float:left;margin:0.5em 0.25em;width:1.5em;height:1.5em;line-height:1.5em;text-align:center;border:1px solid #CCC;background-color:#FFF;box-sizing:border-box;}
+    .workspace {position:relative;height:500px;font-size:24px;border:1px solid #CCC;border-top:0 none transparent;background-color:#F5F5F5;
+    }
+    .workspace .item {position:absolute;width:1.5em;height:1.5em;line-height:1.5em;text-align:center;border:1px solid #CCC;background-color:#FFF;}
+    .workspace .item:after {content:attr(data-id);display:block;font-size:12px;height:1em;line-height:1.2em;}
+
+    .line {position:absolute;height:2px;
+      background-image: -moz-linear-gradient(0deg, #FFF 25%, #000 25%, #000 50%, #FFF 50%, #FFF 75%, #000 75%, #000);background-size:40px 40px;box-shadow:0 0 2px 0 #000;
+      -webkit-transform-origin:left center;
+      -moz-transform-origin:left center;
+      -ms-transform-origin:left center;
+      -o-transform-origin:left center;
+      transform-origin:left center;
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+      -webkit-animation: flow 2s linear infinite;
+      -moz-animation: flow 2s linear infinite;
+      -o-animation: flow 2s linear infinite;
+      animation: flow 2s linear infinite;
+    }
+    /*.line:after {position:absolute;content:'\200B';width:0;height:0;top:50%;right:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:5px solid #000;
+        -webkit-transform: translateY(-50%);
+        -moz-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        -o-transform: translateY(-50%);
+        transform: translateY(-50%);;
+    }/**/
+    @keyframes flow {
+      0% {background-position-x:0;}
+      100% {background-position-x:39px;}
+    }
+  </style>
+  <script>
+    window.addEventListener('load', function(){
+
+      var instanceId = 1;
+
+      var domWorkspace = document.querySelector('.workspace');
+
+      function line_by_id($itemId)
+      {
+        return {
+          from : Array.prototype.slice.call(document.querySelectorAll('[data-id-from="'+$itemId+'"]'))
+          ,to  : Array.prototype.slice.call(document.querySelectorAll('[data-id-to="'+$itemId+'"]'))
+        };
+      }
+      function line_get($fromId, $toId)
+      {
+        var selector = '[data-id-from="'+$fromId+'"][data-id-to="'+$toId+'"]';
+        var dom = document.querySelector(selector);
+        if(dom instanceof HTMLElement == false)
+        {
+          dom = document.createElement('DIV');
+          dom.className = 'line';
+          dom.setAttribute('data-id-from', $fromId);
+          dom.setAttribute('data-id-to', $toId);
+          domWorkspace.appendChild(dom);
+        }
+
+        return dom;
+      }
+      function line_update($domLine, $domBase)
+      {
+        var fromId = $domLine.getAttribute('data-id-from');
+        var toId   = $domLine.getAttribute('data-id-to');
+
+        var domFrom = $domBase.querySelector('.item[data-id="'+fromId+'"]');
+        var domTo   = $domBase.querySelector('.item[data-id="'+toId+'"]');
+
+        var rectBase = domWorkspace.getBoundingClientRect();
+        var rectFrom = domFrom.getBoundingClientRect();
+        var rectTo   = domTo.getBoundingClientRect();
+
+        var sx, sy, ex, ey;
+        if(rectFrom.right < rectTo.left)
+        {
+          sx = rectFrom.right - rectBase.left;
+          sy = rectFrom.top + Math.floor(rectFrom.height/2) - rectBase.top;
+          ex = rectTo.left - rectBase.left;
+          ey = rectTo.top + Math.floor(rectTo.height/2) - rectBase.top;
+        }
+        else if(rectFrom.left > rectTo.right)
+        {
+          sx = rectFrom.left - rectBase.left;
+          sy = rectFrom.top + Math.floor(rectFrom.height/2) - rectBase.top;
+          ex = rectTo.right - rectBase.left;
+          ey = rectTo.top + Math.floor(rectTo.height/2) - rectBase.top;
+        }
+        else
+        {
+          sx = rectFrom.right - rectBase.left;
+          sy = rectFrom.top + Math.floor(rectFrom.height/2) - rectBase.top;
+          ex = rectTo.left - rectBase.left;
+          ey = rectTo.top + Math.floor(rectTo.height/2) - rectBase.top;
+        }
+
+        var deg = Math.atan2((ey-sy),(ex-sx))*180/Math.PI;
+
+        $domLine.style.top = sy + 'px';
+        $domLine.style.left = sx + 'px';
+        $domLine.style.width = Math.sqrt( Math.pow(ex-sx, 2) + Math.pow(ey-sy, 2) ) + 'px';
+        $domLine.style.transform = 'rotate('+deg+'deg)';
+      }
+
+      var domDoc  = document.querySelector('.toolbar .item[data-type="doc"]');
+      var domGear = document.querySelector('.toolbar .item[data-type="gear"]');
+
+      domDoc.addEventListener('dragstart', function($evt){
+        $evt.dataTransfer.effectAllowed = 'copy';
+        $evt.dataTransfer.setData('text/plain', 'doc');
+
+        var json = {mx:$evt.offsetX||$evt.layerX,my:$evt.offsetY||$evt.layerY};
+        $evt.dataTransfer.setData('text/json', JSON.stringify(json));
+      }, false);
+      domGear.addEventListener('dragstart', function($evt){
+        $evt.dataTransfer.effectAllowed = 'copy';
+        $evt.dataTransfer.setData('text/plain', 'gear');
+
+        var json = {mx:$evt.offsetX||$evt.layerX,my:$evt.offsetY||$evt.layerY};
+        $evt.dataTransfer.setData('text/json', JSON.stringify(json));
+      }, false);
+
+      domWorkspace.addEventListener('dragenter', function($evt){
+      }, false);
+      domWorkspace.addEventListener('dragleave', function($evt){
+      }, false);
+      domWorkspace.addEventListener('dragover', function($evt){
+        $evt.preventDefault();
+      }, false);
+      domWorkspace.addEventListener('drop', function($evt){
+        $evt.preventDefault();
+
+        var rect = domWorkspace.getBoundingClientRect();
+        var type = $evt.dataTransfer.getData('text/plain');
+        var json = JSON.parse($evt.dataTransfer.getData('text/json'));
+
+        var dom;
+        if($evt.dataTransfer.effectAllowed == 'copy')
+        {
+          switch(type)
+          {
+            case 'doc':
+              dom = domDoc.cloneNode(true);
+              dom.setAttribute('data-id', (instanceId++).toString());
+              dom.style.top  = ($evt.pageY - rect.top - json.my) + 'px';
+              dom.style.left = ($evt.pageX - rect.left - json.mx) + 'px';
+              domWorkspace.appendChild(dom);
+
+              dom.addEventListener('dragstart', function($evt){
+                $evt.dataTransfer.effectAllowed = 'move';
+                $evt.dataTransfer.setData('text/plain', 'doc');
+
+                var json = {id:this.getAttribute('data-id'),mx:$evt.offsetX||$evt.layerX,my:$evt.offsetY||$evt.layerY};
+                $evt.dataTransfer.setData('text/json', JSON.stringify(json));
+              });
+              dom.addEventListener('drop', function($evt) {
+                $evt.preventDefault();
+
+                var json = JSON.parse($evt.dataTransfer.getData('text/json'));
+
+                var fromId = json.id;
+                var toId   = this.getAttribute('data-id');
+
+                if(fromId == toId)
+                  return;
+
+                var domLine = line_get(fromId, toId);
+                line_update(domLine, domWorkspace);
+              });
+              break;
+            case 'gear':
+              dom = domGear.cloneNode(true);
+              dom.setAttribute('data-id', (instanceId++).toString());
+              dom.style.top  = ($evt.pageY - rect.top - json.my) + 'px';
+              dom.style.left = ($evt.pageX - rect.left - json.mx) + 'px';
+              domWorkspace.appendChild(dom);
+
+              dom.addEventListener('dragstart', function($evt){
+                $evt.dataTransfer.effectAllowed = 'move';
+                $evt.dataTransfer.setData('text/plain', 'gear');
+
+                var json = {id:this.getAttribute('data-id'),mx:$evt.offsetX||$evt.layerX,my:$evt.offsetY||$evt.layerY};
+                $evt.dataTransfer.setData('text/json', JSON.stringify(json));
+              });
+              dom.addEventListener('drop', function($evt) {
+                $evt.preventDefault();
+
+                var json = JSON.parse($evt.dataTransfer.getData('text/json'));
+
+                var fromId = json.id;
+                var toId   = this.getAttribute('data-id');
+
+                if(fromId == toId)
+                  return;
+
+                var domLine = line_get(fromId, toId);
+                line_update(domLine, domWorkspace);
+              });
+              break;
+          }
+        }
+        else if($evt.dataTransfer.effectAllowed == 'move')
+        {
+          if($evt.target.classList.contains('workspace') == true)
+          {
+            var itemId = json.id;
+            dom = domWorkspace.querySelector('.item[data-id="'+itemId+'"]');
+            if(dom instanceof HTMLElement)
+            {
+              dom.style.top  = ($evt.pageY - rect.top - json.my) + 'px';
+              dom.style.left = ($evt.pageX - rect.left - json.mx) + 'px';
+
+              var i;
+              var map = line_by_id(itemId);
+              if(Array.isArray(map.from) == true)
+              {
+                for(i=0; i<map.from.length; i++)
+                {
+                  line_update(map.from[i], domWorkspace);
+                }
+              }
+              if(Array.isArray(map.to) == true)
+              {
+                for(i=0; i<map.to.length; i++)
+                {
+                  line_update(map.to[i], domWorkspace);
+                }
+              }
+            }
+          }
+        }
+      }, false);
+    });
+  </script>
+</head>
+<body>
+<div class="toolbar clear-fix">
+  <div class="item" data-type="doc" draggable="true">&#128462;</div>
+  <div class="item" data-type="gear" draggable="true">&#9881;</div>
+</div>
+<div class="workspace">
+
+</div>
+</body>
+</html>

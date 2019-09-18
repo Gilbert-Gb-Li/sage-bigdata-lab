@@ -1,0 +1,23 @@
+<app-data-tab [index]="0"></app-data-tab>
+
+<dl class="zen-nav">
+  <dt>Demo样例</dt>
+  <dd *ngFor="let item of apps" (click)="toggleApp(item.id)">
+    {{item.tipsName}}
+  </dd>
+  <dd>
+    <button nz-button [nzType]="'primary'" (click)="showModal()"><span>添加APP</span></button>
+  </dd>
+</dl>
+
+<button nz-button nzType="default">添加模式</button>
+<button nz-button nzType="default">添加存储</button>
+<button nz-button nzType="default">添加血缘</button>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="NEW A APP" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()"
+                     [nzWidth]="800">
+  <app-storage-edit></app-storage-edit>
+</nz-modal>
+
+
+<app-zen-chart [appId]="app" [zenContext]="zenContext"></app-zen-chart>

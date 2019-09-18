@@ -1,0 +1,58 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+GET           /                             controllers.HomeController.index
+GET           /index.htm                    controllers.HomeController.index
+GET           /index.html                   controllers.HomeController.index
+GET           /explore                      controllers.HomeController.explore
+GET           /tutorial                     controllers.HomeController.tutorial
+GET           /hello/:name.html             controllers.HelloController.hello(name: String)
+
+
+GET           /api/1.0/component/:id        controllers.data.ComponentController.getById(id: Long)
+GET           /api/1.0/component            controllers.data.ComponentController.getAllBy(query: Option[String])
+POST          /api/1.0/component            controllers.data.ComponentController.post()
+PUT           /api/1.0/component/:id        controllers.data.ComponentController.put(id: Long)
+DELETE        /api/1.0/component/:id        controllers.data.ComponentController.delete(id: Long)
+
+
+GET           /api/1.0/enum/:id             controllers.data.EnumController.getById(id: Long)
+GET           /api/1.0/enum                 controllers.data.EnumController.getAllBy(query: Option[String])
+POST          /api/1.0/enum                 controllers.data.EnumController.post()
+PUT           /api/1.0/enum/:id             controllers.data.EnumController.put(id: Long)
+DELETE        /api/1.0/enum/:id             controllers.data.EnumController.delete(id: Long)
+
+GET           /api/1.0/app/:id              controllers.data.AppController.getById(id: Long)
+GET           /api/1.0/app                  controllers.data.AppController.getAllBy(query: Option[String])
+POST          /api/1.0/app                  controllers.data.AppController.post()
+PUT           /api/1.0/app/:id              controllers.data.AppController.put(id: Long)
+DELETE        /api/1.0/app/:id              controllers.data.AppController.delete(id: Long)
+
+GET           /api/1.0/schema/:id           controllers.data.SchemaController.getById(id: Long)
+GET           /api/1.0/schema               controllers.data.SchemaController.getAllBy(query: Option[String])
+POST          /api/1.0/schema               controllers.data.SchemaController.post()
+PUT           /api/1.0/schema/:id           controllers.data.SchemaController.put(id: Long)
+DELETE        /api/1.0/schema/:id           controllers.data.SchemaController.delete(id: Long)
+
+GET           /api/1.0/field/:id            controllers.data.FieldController.getById(id: Long)
+GET           /api/1.0/field                controllers.data.FieldController.getAllBy(query: Option[String])
+POST          /api/1.0/field                controllers.data.FieldController.post()
+PUT           /api/1.0/field/:id            controllers.data.FieldController.put(id: Long)
+DELETE        /api/1.0/field/:id            controllers.data.FieldController.delete(id: Long)
+
+GET           /api/1.0/storage/:id          controllers.data.StorageController.getById(id: Long)
+GET           /api/1.0/storage              controllers.data.StorageController.getAllBy(query: Option[String])
+POST          /api/1.0/storage              controllers.data.StorageController.post()
+PUT           /api/1.0/storage/:id          controllers.data.StorageController.put(id: Long)
+DELETE        /api/1.0/storage/:id          controllers.data.StorageController.delete(id: Long)
+
+POST          /api/1.0/user/post            controllers.data.UserController.post()
+POST          /api/1.0/user/login           controllers.data.UserController.login()
+
+GET           /api/1.0/log/login            controllers.data.AuthLogController.getAllBy(query: Option[String])
+
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/*file                 controllers.Assets.versioned(path="/public", file: Asset)
